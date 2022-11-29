@@ -1,4 +1,6 @@
+# Local folders
 /.idea/
+/venv/
 /train_video/
 /dataset/
 /dataset_splitted/
@@ -6,7 +8,15 @@
 /checkpoints/
 /tensorboard/
 /submit/
-vitya2.0_model.h5
-test.ipynb
-solution.ipynb
-test.jpg
+
+# Local data
+*.h5
+test.*
+
+# Submit
+/video/
+/input/
+/output/
+
+# Docker
+Dockerfile

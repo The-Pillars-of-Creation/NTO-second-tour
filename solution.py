@@ -5,7 +5,9 @@ from tensorflow.keras.activations import softmax
 
 import cv2
 import numpy as np
-import matplotlib.pyplot as plt
+import pandas as pd
+from alive_progress import alive_bar
+import os
 
 from collections import Counter
 
@@ -14,13 +16,24 @@ tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
 
 
 RANDOM_SEED = 69
-BATCH_SIZE  = 32
-EPOCHS      = 30
-IMAGE_SIZE  = (224, 224)
-LABEL_MODE  = "categorical"
+BATCH_SIZE = 32
+EPOCHS = 30
+IMAGE_SIZE = (224, 224)
+LABEL_MODE = "categorical"
 AUGMENTATION_FACTOR = 0.2
-TRAIN_DIR   = "dataset_splitted/train"
-TEST_DIR    = "dataset_splitted/val"
+TRAIN_DIR = "dataset_splitted/train"
+TEST_DIR = "dataset_splitted/val"
+LABELS = {
+    'water': 0, 
+    'car': 1, 
+    'cloud': 2, 
+    'food': 3, 
+    'flower': 4, 
+    'dance': 5, 
+    'animal': 6, 
+    'sunset': 7,
+    'fire': 8
+}
 TAGS = [
     "animal", "car", "cloud", "dance", "fire", "flower", "food", "sunset", "water"
 ]
@@ -60,7 +73,7 @@ class VityaModel:
         self.model = model
 
 
-Vitya = VityaModel()
+Vitya = VityaModel().model
 
 
 
@@ -87,7 +100,7 @@ def images_from_video(filepath: str) -> np.array:
 
 
 def classify_image(image: tf.image) -> str:
-    prediction = Vitya.model.predict(image)
+    prediction = Vitya.predict(image)
     tag = TAGS[np.argmax(prediction)]
     return tag
 
@@ -97,12 +110,24 @@ def classify_video(filepath: str) -> list[str]:
     tags = np.array([])
     for image in images:
         tag = classify_image(image)
-        print(tag)
         tags = np.append(tags, tag)
-    print(tags)
     tags = Counter(tags)
-    return tags.most_common()[0][0]
+    return LABELS.get(tags.most_common()[0][0], 0)
+
+
+def main():
+    test_data = pd.read_csv("input/test.csv")
+    predictions = []
+    with alive_bar(len(test_data.path)) as bar:
+        for path in test_data.path:
+            prediction = classify_video(f"video/{path}")
+            predictions.append(prediction)
+            bar()
     
+    out_data = pd.DataFrame({"path": test_data.path, "labels": predictions})
+    os.makedirs("output", exist_ok=True)
+    out_data.to_csv("output/predictions.csv", index=False)
 
 
-print(classify_video("train_video\_Argentina a cloud after sunset over Fitz Roy_preview.mp4"))
+if __name__ == "__main__":
+    main()
