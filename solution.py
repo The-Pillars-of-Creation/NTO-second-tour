@@ -15,15 +15,10 @@ from collections import Counter
 tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
 
 
-RANDOM_SEED = 69
-BATCH_SIZE = 32
-EPOCHS = 30
-IMAGE_SIZE = (224, 224)
-LABEL_MODE = "categorical"
-AUGMENTATION_FACTOR = 0.2
-TRAIN_DIR = "dataset_splitted/train"
-TEST_DIR = "dataset_splitted/val"
-LABELS = {
+RANDOM_SEED = 69  # Рандомный сид 
+IMAGE_SIZE = (224, 224)  # Размер изображения
+AUGMENTATION_FACTOR = 0.2  # Коэффициент аугментации
+LABELS = {  # Словарь с метками
     'water': 0, 
     'car': 1, 
     'cloud': 2, 
@@ -34,13 +29,19 @@ LABELS = {
     'sunset': 7,
     'fire': 8
 }
-TAGS = [
+TAGS = [  # Список с метками
     "animal", "car", "cloud", "dance", "fire", "flower", "food", "sunset", "water"
 ]
 
 
 class VityaModel:
+    """
+    Модель Витя.
+    Использует предобученную модель ResNet50V2, аугментацию и обученные веса из файла train.ipynb.
+    Очень умный 🙂
+    """
     def __init__(self) -> None:
+        # Делаем слой аугментации
         augmentaion_layer = Sequential([
             RandomFlip("horizontal", seed=RANDOM_SEED),
             RandomRotation(AUGMENTATION_FACTOR, seed=RANDOM_SEED),
@@ -49,45 +50,60 @@ class VityaModel:
             RandomWidth(AUGMENTATION_FACTOR, seed=RANDOM_SEED),
             Rescaling(1 / 255.)
         ])
-
         augmentaion_layer
+
+        # Загружаем предобученную модель ResNet50V2
         base_model = tf.keras.applications.ResNet50V2(include_top=False)
         base_model.trainable = False
-
+        
+        # Делаем сверточную нейронную сеть
         input_layer = tf.keras.layers.Input(shape=(224, 224, 3), name="input_layer")
         x = augmentaion_layer(input_layer)
         x = base_model(x, training=False)
         x = tf.keras.layers.GlobalAveragePooling2D(name="global_average_pooling2d")(x)
         output_layer = Dense(len(TAGS), activation=softmax, name="output_layer")(x)
 
+        # Объединяем слои в модель
         model = tf.keras.Model(input_layer, output_layer)
         model.compile(
             loss=tf.keras.losses.CategoricalCrossentropy(),
             optimizer=tf.keras.optimizers.Adam(),
             metrics=["accuracy"]
         )
+
+        # Загружаем веса
         model_checkpoint_path = "./checkpoints/vitya_weights"
         model.load_weights(model_checkpoint_path)
         print("Compiled VityaModel")
-
+        
+        # Сохраняем модель
         self.model = model
 
 
-Vitya = VityaModel().model
-
+Vitya = VityaModel().model  # Создаем модель Витя
 
 
 def images_from_video(filepath: str) -> np.array:
+    """
+    Функция для извлечения кадров из видео.
+    На вход принимает путь, возвращает массив кадров в формате numpy массива.
+    """
     images = []
 
+    # Загружаем видео
     vidcap = cv2.VideoCapture(filepath)
+    # Получаем количество кадров
     length = int(vidcap.get(cv2.CAP_PROP_FRAME_COUNT))
+    # Получаем частоту кадров
     delta = length // 10
     current_frame, count = 1, 1
+    # Читаем кадры
     for i in range(length):
         success, image = vidcap.read(current_frame)
         if success and i == current_frame:
-            image = cv2.resize(image, (224, 224), interpolation = cv2.INTER_AREA)
+            # Изменяем размер кадра
+            image = cv2.resize(image, IMAGE_SIZE, interpolation = cv2.INTER_AREA)
+            # Добавляем кадр в массив
             image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
             image = tf.expand_dims(np.asarray(image), axis=0)
             images.append(image)
@@ -100,12 +116,20 @@ def images_from_video(filepath: str) -> np.array:
 
 
 def classify_image(image: tf.image) -> str:
+    """
+    Функция для классификации изображения.
+    На вход принимает изображение в формате numpy массива, возвращает метку.
+    """
     prediction = Vitya.predict(image)
     tag = TAGS[np.argmax(prediction)]
     return tag
 
 
 def classify_video(filepath: str) -> list[str]:
+    """
+    Функция для классификации видео.
+    На вход принимает путь, возвращает список меток.
+    """
     images = images_from_video(filepath)
     tags = np.array([])
     for image in images:
