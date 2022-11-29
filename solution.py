@@ -32,6 +32,9 @@ LABELS = {  # Словарь с метками
 TAGS = [  # Список с метками
     "animal", "car", "cloud", "dance", "fire", "flower", "food", "sunset", "water"
 ]
+# Мы обучали модель на TAGS, но для НТО необходимо возвращать id метки, и так как порядок меток в TAGS
+# имеет значение для нашего Вити, мы закидываем его предсказание в словарь LABELS.
+# Тупо, но переделывать лень и нет нужды.
 
 
 class VityaModel:
@@ -50,7 +53,6 @@ class VityaModel:
             RandomWidth(AUGMENTATION_FACTOR, seed=RANDOM_SEED),
             Rescaling(1 / 255.)
         ])
-        augmentaion_layer
 
         # Загружаем предобученную модель ResNet50V2
         base_model = tf.keras.applications.ResNet50V2(include_top=False)
@@ -102,7 +104,7 @@ def images_from_video(filepath: str) -> np.array:
         success, image = vidcap.read(current_frame)
         if success and i == current_frame:
             # Изменяем размер кадра
-            image = cv2.resize(image, IMAGE_SIZE, interpolation = cv2.INTER_AREA)
+            image = cv2.resize(image, IMAGE_SIZE, interpolation=cv2.INTER_AREA)
             # Добавляем кадр в массив
             image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
             image = tf.expand_dims(np.asarray(image), axis=0)
