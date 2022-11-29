@@ -68,3 +68,11 @@ history_1 = model_1.fit(
     ]
 )
 ```
+
+| Файл | Назначение |
+| --- | --- |
+| [solution.py](solution.py) | итоговое решение для отправки в систему НТО |
+| [solution.ipynb](solution.ipynb) | тестировка модели на тестовых фотографиях |
+| [train.ipynb](train.ipynb) | обучение модели |
+| [first_try.ipynb](first_try.ipynb) | первая попытка обучения модели |
+| [dataload.py](dataload.py) | первоначальная загрузка данных для pytorch, не используется |
