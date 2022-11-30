@@ -17,6 +17,7 @@ test.*
 /video/
 /input/
 /output/
+win.zip
 
 # Docker
 Dockerfile

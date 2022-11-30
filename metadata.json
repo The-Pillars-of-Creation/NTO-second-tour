@@ -1,4 +1,4 @@
 {
     "image": "parzivaleugene/vitya:6",
-    "entry_point": "python3 solution.py"
+    "entry_point": "python3 solution.py --test_path input.csv --output_path ./output/ --video_path /video"
 }

@@ -8,6 +8,7 @@ import numpy as np
 import pandas as pd
 from alive_progress import alive_bar
 import os
+import argparse
 
 from collections import Counter
 
@@ -143,28 +144,23 @@ def classify_video(filepath: str) -> int:
 
 
 def main():
-    test_data = pd.read_csv("input/test.csv")
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--test_path', default='./input/test.csv', type=str, help='config path')
+    parser.add_argument('--output_path', default='./output/', type=str, help='config path')
+    parser.add_argument('--video_path', default='./video', type=str, help='config path')
+    args = parser.parse_args()
+    test_data = pd.read_csv(args.test_path)
     predictions = []
     with alive_bar(len(test_data.path)) as bar:
         for path in test_data.path:
-            prediction = classify_video(f"video/{path}")
+            prediction = classify_video(f"{args.video_path}/{path}")
             predictions.append(prediction)
             bar()
     
     out_data = pd.DataFrame({"path": test_data.path, "labels": predictions})
-    os.makedirs("output", exist_ok=True)
-    out_data.to_csv("output/predictions.csv", index=False)
+    os.makedirs(args.output_path, exist_ok=True)
+    out_data.to_csv(f"{args.output_path}predictions.csv", index=False)
 
 
 if __name__ == "__main__":
     main()
-
-"""
- ^＿^
-(｡･ω･｡)つ-☆・*。
-⊂    |    ・゜+.
-し ーＪ   °。+ *')
-         .· ´  .·*')  .·')
-          (¸.·´ (¸.·'* FillMagickSW() Do you believe in Magic? ☆ﾞ
-
-"""
