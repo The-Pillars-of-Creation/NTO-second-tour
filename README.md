@@ -30,7 +30,11 @@ class VityaModel:
         ])
 
         augmentaion_layer
-        base_model = tf.keras.applications.ResNet50V2(include_top=False, weights="./checkpoints/vitya_weights")
+        base_model = tf.keras.applications.ResNet50V2(
+                include_top=False, 
+                weights="{}/checkpoints/vitya_weights".format(os.getcwd())
+            )
+
         base_model.trainable = False
 
         input_layer = tf.keras.layers.Input(shape=(224, 224, 3), name="input_layer")

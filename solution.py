@@ -55,7 +55,11 @@ class VityaModel:
         ])
 
         # Загружаем модель ResNet50V2 с весами полученными при обучении 
-        base_model = tf.keras.applications.ResNet50V2(include_top=False, weights="./checkpoints/vitya_weights")
+        base_model = tf.keras.applications.ResNet50V2(
+                include_top=False, 
+                weights="{}/checkpoints/vitya_weights".format(os.getcwd())
+            )
+
         base_model.trainable = False
         
         # Делаем сверточную нейронную сеть
