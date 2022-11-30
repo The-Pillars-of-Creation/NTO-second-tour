@@ -128,7 +128,7 @@ def classify_image(image: tf.image) -> str:
     return tag
 
 
-def classify_video(filepath: str) -> list[str]:
+def classify_video(filepath: str) -> int:
     """
     Функция для классификации видео.
     На вход принимает путь, возвращает список меток.

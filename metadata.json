@@ -1,4 +1,4 @@
 {
-    "image": "parzivaleugene/vitya:4",
+    "image": "parzivaleugene/vitya:6",
     "entry_point": "python3 solution.py"
 }
