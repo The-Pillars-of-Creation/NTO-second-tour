@@ -158,3 +158,13 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+"""
+ ^＿^
+(｡･ω･｡)つ-☆・*。
+⊂    |    ・゜+.
+し ーＪ   °。+ *')
+         .· ´  .·*')  .·')
+          (¸.·´ (¸.·'* FillMagickSW() Do you believe in Magic? ☆ﾞ
+
+"""
