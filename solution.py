@@ -55,7 +55,7 @@ class VityaModel:
         ])
 
         # Загружаем предобученную модель ResNet50V2
-        base_model = tf.keras.applications.ResNet50V2(include_top=False)
+        base_model = tf.keras.applications.ResNet50V2(include_top=False, weights=None)
         base_model.trainable = False
         
         # Делаем сверточную нейронную сеть
@@ -127,7 +127,7 @@ def classify_image(image: tf.image) -> str:
     return tag
 
 
-def classify_video(filepath: str) -> list[str]:
+def classify_video(filepath: str) -> int:
     """
     Функция для классификации видео.
     На вход принимает путь, возвращает список меток.
