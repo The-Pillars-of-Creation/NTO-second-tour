@@ -30,10 +30,7 @@ class VityaModel:
         ])
 
         augmentaion_layer
-        base_model = tf.keras.applications.ResNet50V2(
-                include_top=False, 
-                weights=f"{os.getcwd()}/checkpoints/vitya_weights"
-            )
+        base_model = tf.keras.applications.ResNet50V2(include_top=False, weights=None)
 
         base_model.trainable = False
 
@@ -50,6 +47,8 @@ class VityaModel:
             metrics=["accuracy"]
         )
         
+        model_checkpoint_path = "./checkpoints/vitya_weights"
+        model.load_weights(model_checkpoint_path)
         print("Compiled VityaModel")
 
         self.model = model

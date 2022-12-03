@@ -18,6 +18,8 @@ test.*
 /input/
 /output/
 win.zip
+dataset.zip
+dataset_saved
 
 # Docker
 Dockerfile

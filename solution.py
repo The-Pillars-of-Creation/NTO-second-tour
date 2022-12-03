@@ -55,12 +55,8 @@ class VityaModel:
             Rescaling(1 / 255.)
         ])
 
-        # Загружаем модель ResNet50V2 с весами полученными при обучении 
-        base_model = tf.keras.applications.ResNet50V2(
-                include_top=False, 
-                weights=f"{os.getcwd()}/checkpoints/vitya_weights"
-            )
-
+        # Загружаем предобученную модель ResNet50V2
+        base_model = tf.keras.applications.ResNet50V2(include_top=False, weights=None)
         base_model.trainable = False
         
         # Делаем сверточную нейронную сеть
@@ -70,7 +66,7 @@ class VityaModel:
         x = tf.keras.layers.GlobalAveragePooling2D(name="global_average_pooling2d")(x)
         output_layer = Dense(len(TAGS), activation=softmax, name="output_layer")(x)
 
-        # Объединяем слои в модель
+         # Объединяем слои в модель
         model = tf.keras.Model(input_layer, output_layer)
         model.compile(
             loss=tf.keras.losses.CategoricalCrossentropy(),
@@ -78,6 +74,9 @@ class VityaModel:
             metrics=["accuracy"]
         )
 
+        # Загружаем веса
+        model_checkpoint_path = "./checkpoints/vitya_weights"
+        model.load_weights(model_checkpoint_path)
         print("Compiled VityaModel")
         
         # Сохраняем модель
