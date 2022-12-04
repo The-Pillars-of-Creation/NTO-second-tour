@@ -75,7 +75,7 @@ class VityaModel:
         )
 
         # Загружаем веса
-        model_checkpoint_path = "./checkpoints/vitya_weights"
+        model_checkpoint_path = "./weights/vitya_weights"
         model.load_weights(model_checkpoint_path)
         print("Compiled VityaModel")
         

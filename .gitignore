@@ -1,25 +1,29 @@
-# Local folders
-/.idea/
-/venv/
-/train_video/
-/dataset/
-/dataset_splitted/
-/checkpoint/
-/checkpoints/
-/tensorboard/
-/submit/
+# idea
+.idea
 
-# Local data
-*.h5
-test.*
+# venv
+venv
 
-# Submit
-/video/
-/input/
-/output/
-win.zip
+# data
+train_video
+test_images
+video
+dataset
 dataset.zip
-dataset_saved
+dataset_splitted
+checkpoint
+checkpoints
+weights
+tensorboard
+
+# submit
+submit
+input
+output
+win.zip
 
 # Docker
 Dockerfile
+
+# test files
+test.*
