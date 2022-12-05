@@ -21,6 +21,7 @@ submit
 input
 output
 win.zip
+es_win.zip
 
 # Docker
 Dockerfile
