@@ -1,4 +1,4 @@
-alive-progress==2.4.1
+alive-progress==3.0.1
 matplotlib==3.6.2
 numpy==1.23.5
 opencv-python==4.6.0.66
